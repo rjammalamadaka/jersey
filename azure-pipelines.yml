@@ -35,7 +35,7 @@ steps:
     command: buildAndPush
     repository: $(imageRepository)
     dockerfile: $(dockerfilePath)
-    containerRegistry: $(dockerRegistryServiceConnection1)
+    containerRegistry: dockerRegistryServiceConnection1
     tags: |
       $(tag)
 
