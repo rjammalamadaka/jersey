@@ -8,7 +8,12 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
-
+variables:
+  # Container registry service connection established during pipeline creation
+  imageRepository: 'rjammalamadakapipeline'
+  containerRegistry: 'testacrajsc.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/app/Dockerfile'
+  tag: '$(Build.BuildId)'
 steps:
 - task: Maven@3
   inputs:
@@ -18,11 +23,20 @@ steps:
   inputs:
     command: login
     containerRegistry: acrajscseeds
+- task: AzureCLI@1
+  inputs:
+    azureSubscription: AJSC
+    scriptLocation: inlineScript
+    inlineScript: |
+      docker login -u ajscacr -p y72Xilz2LfFYx6ei90aIdrjVwkF/U51b testacrajsc.azurecr.io
 - task: Docker@2
   displayName: Build and push an image to container registry
   inputs:
     command: buildAndPush
-    repository: jersey
-    tags: latest
+    repository: $(imageRepository)
+    dockerfile: $(dockerfilePath)
+    containerRegistry: $(dockerRegistryServiceConnection1)
+    tags: |
+      $(tag)
 
 
